@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "653815217456",
+    "project_id": "device-streaming-04615bf8",
+    "storage_bucket": "device-streaming-04615bf8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653815217456:android:2be2c0ae42269c2afedcf5",
+        "android_client_info": {
+          "package_name": "com.example.event_planning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBliPhCyK3gRCJ5LjCsHfaHwgUpGIdcsTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

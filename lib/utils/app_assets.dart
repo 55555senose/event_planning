@@ -6,6 +6,7 @@ class AppAssets {
   static const String intro4 = 'assets/images/intro4.png.png';
   static const String routeImage = 'assets/images/routeImage.png';
   static const String googleIcon = 'assets/images/googleIcon.png';
-  static const String resetPasswordImage = 'assets/images/reset_password.png'; // ✅ ضيف الصورة هنا
+  static const String resetPasswordImage = 'assets/images/reset_password.png';
+  static const String birthday = 'assets/images/birthday.png';
 
 }

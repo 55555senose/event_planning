@@ -1,6 +1,8 @@
 import 'package:event_planning/utils/app_colors.dart';
 import 'package:event_planning/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class EventCard extends StatelessWidget {
   final String title;
@@ -8,7 +10,8 @@ class EventCard extends StatelessWidget {
   final String imagePath;
   final DateTime date;
   final bool isSaved;
-  final VoidCallback onToggleFavorite; // ✅ بقت required مش nullable
+  final VoidCallback onToggleFavorite;
+  final String? eventId;
 
   const EventCard({
     super.key,
@@ -17,7 +20,8 @@ class EventCard extends StatelessWidget {
     required this.imagePath,
     required this.date,
     required this.isSaved,
-    required this.onToggleFavorite, // ✅
+    required this.onToggleFavorite,
+    this.eventId,
   });
 
   @override
@@ -47,10 +51,15 @@ class EventCard extends StatelessWidget {
           /// 🔹 Image
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(imagePath, height: 160, width: double.infinity, fit: BoxFit.cover),
+            child: Image.asset(
+              imagePath,
+              height: 160,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ),
 
-          /// 🔹 Date + Title + Heart
+          /// 🔹 Date + Title + Heart + Delete
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
@@ -72,7 +81,9 @@ class EventCard extends StatelessWidget {
                       ),
                       Text(
                         month,
-                        style: AppStyles.medium14.copyWith(color: onSurfaceVariant),
+                        style: AppStyles.medium14.copyWith(
+                          color: onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -92,20 +103,75 @@ class EventCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         description,
-                        style: AppStyles.medium14.copyWith(color: onSurfaceVariant),
+                        style: AppStyles.medium14.copyWith(
+                          color: onSurfaceVariant,
+                        ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
 
-                /// Heart
-                GestureDetector(
-                  onTap: onToggleFavorite, // ✅ شغالة دلوقتي
-                  child: Icon(
-                    isSaved ? Icons.favorite : Icons.favorite_border,
-                    color: isSaved ? AppColors.redColor : AppColors.greyColor,
-                  ),
+                /// Heart & Delete (Side by side)
+                Row(
+                  children: [
+                    /// Favorite
+                    GestureDetector(
+                      onTap: onToggleFavorite,
+                      child: Icon(
+                        isSaved ? Icons.favorite : Icons.favorite_border,
+                        color: isSaved
+                            ? AppColors.redColor
+                            : AppColors.greyColor,
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    /// Delete
+                    if (eventId != null)
+                      GestureDetector(
+                        onTap: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text("Delete Event"),
+                              content: const Text(
+                                "Are you sure you want to delete this event?",
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text(
+                                    "Delete",
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (confirm == true) {
+                            print('Deleting event with ID: $eventId');
+
+                            await FirebaseFirestore.instance
+                                .collection('Events')
+                                .doc(eventId)
+                                .delete();
+                          }
+                        },
+                        child: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.redAccent,
+                          
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -117,8 +183,18 @@ class EventCard extends StatelessWidget {
 
   String _monthString(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return months[month - 1];
   }

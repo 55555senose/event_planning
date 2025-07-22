@@ -2,6 +2,7 @@ import 'package:event_planning/l10n/app_localizations.dart';
 import 'package:event_planning/models/event_model.dart';
 import 'package:event_planning/providers/app_language_provider.dart';
 import 'package:event_planning/providers/app_theme_provider.dart';
+import 'package:event_planning/services/firestore_service.dart';
 import 'package:event_planning/ui/home/widgets/event_card.dart';
 import 'package:event_planning/utils/app_colors.dart';
 import 'package:event_planning/utils/app_styles.dart';
@@ -9,12 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomeTab extends StatefulWidget {
-  final List<EventModel> events;
   final Function(EventModel event) onToggleFavorite;
 
   const HomeTab({
     super.key,
-    required this.events,
     required this.onToggleFavorite,
   });
 
@@ -36,14 +35,6 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-
-    final filteredEvents = selectedCategory == 'all'
-        ? widget.events
-        : widget.events
-              .where(
-                (e) => e.type.toLowerCase() == selectedCategory.toLowerCase(),
-              )
-              .toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -67,93 +58,121 @@ class _HomeTabState extends State<HomeTab> {
           const SizedBox(height: 16),
 
           /// 🔹 Categories
-          SizedBox(
-            height: 40,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: _categories.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                final category = _categories[index];
-                final key = category['key'];
-                final icon = category['icon'];
-                final isSelected = selectedCategory == key;
-                final label = key;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedCategory = key;
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primaryLight
-                          : Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.primaryLight),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          icon,
-                          size: 18,
-                          color: isSelected
-                              ? Colors.white
-                              : AppColors.primaryLight,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          {
-                                'all': t.all,
-                                'sport': t.sport,
-                                'birthday': t.birthday,
-                                'meeting': t.meeting,
-                                'exhibition': t.exhibition,
-                              }[label.toLowerCase()] ??
-                              label,
-                          style: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : AppColors.primaryLight,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          _buildCategoryFilter(t),
 
           const SizedBox(height: 16),
 
           /// 🔹 Event List
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: filteredEvents.length,
-              itemBuilder: (context, index) {
-                final event = filteredEvents[index];
-                return EventCard(
-                  title: event.title,
-                  description: event.description,
-                  imagePath: event.imagePath,
-                  date: event.date,
-                  isSaved: event.isSaved,
-                  onToggleFavorite: () => widget.onToggleFavorite(event),
+            child: StreamBuilder<List<EventModel>>(
+              stream: FirestoreService.getEventsStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(child: Text("Error loading events"));
+                }
+
+                final events = snapshot.data ?? [];
+
+                final filteredEvents = selectedCategory == 'all'
+                    ? events
+                    : events
+                        .where((e) =>
+                            e.type.toLowerCase() ==
+                            selectedCategory.toLowerCase())
+                        .toList();
+
+                if (filteredEvents.isEmpty) {
+                  return Center(child: Text(t.noData));
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: filteredEvents.length,
+                  itemBuilder: (context, index) {
+                    final event = filteredEvents[index];
+                    return EventCard(
+                      title: event.title,
+                      description: event.description,
+                      imagePath: event.imagePath,
+                      date: event.date,
+                      isSaved: event.isSaved,
+                      onToggleFavorite: () => widget.onToggleFavorite(event),
+                        eventId: event.id, // ✅ مهم جدًا
+
+                    );
+                  },
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryFilter(AppLocalizations t) {
+    return SizedBox(
+      height: 40,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: _categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final category = _categories[index];
+          final key = category['key'];
+          final icon = category['icon'];
+          final isSelected = selectedCategory == key;
+          final label = key;
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCategory = key;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primaryLight
+                    : Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primaryLight),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    icon,
+                    size: 18,
+                    color:
+                        isSelected ? Colors.white : AppColors.primaryLight,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    {
+                          'all': t.all,
+                          'sport': t.sport,
+                          'birthday': t.birthday,
+                          'meeting': t.meeting,
+                          'exhibition': t.exhibition,
+                        }[label.toLowerCase()] ??
+                        label,
+                    style: TextStyle(
+                      color:
+                          isSelected ? Colors.white : AppColors.primaryLight,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

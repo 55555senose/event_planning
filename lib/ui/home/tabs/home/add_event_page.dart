@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:event_planning/models/event_model.dart';
 import 'package:event_planning/utils/app_styles.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:event_planning/l10n/app_localizations.dart';
 
 class AddEventPage extends StatefulWidget {
   const AddEventPage({super.key});
@@ -60,7 +62,7 @@ class _AddEventPageState extends State<AddEventPage> {
     if (time != null) setState(() => selectedTime = time);
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate() &&
         selectedDate != null &&
         selectedTime != null) {
@@ -80,7 +82,26 @@ class _AddEventPageState extends State<AddEventPage> {
         type: selectedType,
       );
 
-      Navigator.pop(context, event);
+      try {
+        final docRef = await FirebaseFirestore.instance
+            .collection(EventModel.collectionName)
+            .add(event.toFirestore());
+
+        await docRef.update({'id': docRef.id});
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Event added successfully')),
+          );
+          Navigator.pop(context);
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $e')),
+          );
+        }
+      }
     }
   }
 
@@ -101,7 +122,6 @@ class _AddEventPageState extends State<AddEventPage> {
           key: _formKey,
           child: ListView(
             children: [
-              /// 🔹 Type Image Banner
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
@@ -112,8 +132,6 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              /// 🔹 Type Chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -134,11 +152,8 @@ class _AddEventPageState extends State<AddEventPage> {
                   }).toList(),
                 ),
               ),
-
               const SizedBox(height: 20),
               Text("Title", style: AppStyles.bold14Primary),
-
-              /// 🔹 Title
               TextFormField(
                 controller: titleController,
                 decoration: InputDecoration(
@@ -154,9 +169,6 @@ class _AddEventPageState extends State<AddEventPage> {
               ),
               const SizedBox(height: 12),
               Text("Description", style: AppStyles.bold14Primary),
-
-              /// 🔹 Title
-              /// 🔹 Description
               TextFormField(
                 controller: descriptionController,
                 maxLines: 4,
@@ -176,8 +188,6 @@ class _AddEventPageState extends State<AddEventPage> {
                     : null,
               ),
               const SizedBox(height: 20),
-
-              /// 🔹 Date Picker
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
@@ -193,8 +203,6 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
                 onTap: _pickDate,
               ),
-
-              /// 🔹 Time Picker
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(Icons.access_time, color: AppColors.primaryLight),
@@ -207,10 +215,7 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
                 onTap: _pickTime,
               ),
-
               const SizedBox(height: 30),
-
-              /// 🔹 Location Picker (UI Only for Now)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -218,7 +223,7 @@ class _AddEventPageState extends State<AddEventPage> {
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () {
-                      // Placeholder: no functionality yet
+                      // Placeholder
                     },
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
@@ -263,10 +268,6 @@ class _AddEventPageState extends State<AddEventPage> {
                 ],
               ),
               const SizedBox(height: 30),
-
-              const SizedBox(height: 30),
-
-              /// 🔹 Submit Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

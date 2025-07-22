@@ -44,7 +44,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/meeting.png',
       date: DateTime(2023, 11, 22),
       type: 'Meeting',
-      isSaved: _savedEvents.any((e) => e.title == t.meeting),
+      isSaved: _savedEvents.any((e) => e.title == t.meeting), 
     ),
     EventModel(
       title: t.exhibition,
@@ -52,7 +52,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/exhibition.png',
       date: DateTime(2023, 11, 23),
       type: 'Exhibition',
-      isSaved: _savedEvents.any((e) => e.title == t.exhibition),
+      isSaved: _savedEvents.any((e) => e.title == t.exhibition), 
     ),
     EventModel(
       title: t.sport,
@@ -66,7 +66,7 @@ Widget build(BuildContext context) {
 
 
     final List<Widget> _pages = [
-      HomeTab(events: events, onToggleFavorite: _toggleFavorite),
+HomeTab(onToggleFavorite: _toggleFavorite),
       Center(
         child: Text(
           t.map,
@@ -87,6 +87,8 @@ Widget build(BuildContext context) {
                 date: event.date,
                 isSaved: true,
                 onToggleFavorite: () => _toggleFavorite(event),
+                  eventId: event.id, // ✅ مهم جدًا
+
               ),
             )
             .toList(),

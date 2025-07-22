@@ -51,7 +51,9 @@
   "desc_birthday": "This is a birthday party",
 "desc_meeting": "Team meeting in Cairo",
 "desc_exhibition": "Art exhibition downtown",
-"desc_sport": "Football match at the stadium"
+"desc_sport": "Football match at the stadium",
+"createEvent": "Create Event",
+"noData": "No Data"
 
 
 

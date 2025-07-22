@@ -152,4 +152,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get desc_sport => 'Football match at the stadium';
+
+  @override
+  String get createEvent => 'Create Event';
+
+  @override
+  String get noData => 'No Data';
 }

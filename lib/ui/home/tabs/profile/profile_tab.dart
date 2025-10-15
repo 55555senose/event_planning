@@ -90,8 +90,7 @@ class _ProfileTabState extends State<ProfileTab> {
               ),
                 child: InkWell(
                   onTap: () {
-                    _showLanguageBottomSheet(); // ✅ استخدم الدالة بعد تصحيح مكانها
-                  },
+                    _showLanguageBottomSheet(); },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

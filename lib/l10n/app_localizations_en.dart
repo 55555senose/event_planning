@@ -33,7 +33,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get introTitle => 'Introduction';
 
   @override
-  String get welcomeMessage => 'Welcome to our amazing event planning app!';
+  String get welcomeMessage => 'Welcome to the amazing event planning app!';
 
   @override
   String get getStarted => 'Get Started';
@@ -43,31 +43,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get personalizeDescription =>
-      'Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.';
+      'Choose your preferred theme and language to start using the app in a comfortable and personalized way that suits your style.';
 
   @override
-  String get letsStart => 'Let’s Start';
+  String get letsStart => 'Let\'s Start';
 
   @override
-  String get intro1Title => 'Find Events That Inspire You';
+  String get intro1Title => 'Discover Events that Inspire You';
 
   @override
   String get intro1Description =>
-      'Dive into a world of events crafted to fit your unique interests. Our curated recommendations will help you explore, connect, and make the most of every opportunity around you.';
+      'Explore a world of events tailored to your interests. Our carefully curated recommendations help you explore, connect, and make the most of every opportunity around you.';
 
   @override
-  String get intro2Title => 'Effortless Event Planning';
+  String get intro2Title => 'Organize Events with Ease';
 
   @override
   String get intro2Description =>
-      'Take the hassle out of organizing events with our all-in-one planning tools. Plan with ease and focus on what matters.';
+      'Say goodbye to the hassle of event planning with our comprehensive tools. Plan with ease and focus on what matters most.';
 
   @override
   String get intro3Title => 'Connect with Friends & Share Moments';
 
   @override
   String get intro3Description =>
-      'Make every event memorable by sharing the experience with others. Capture and relive the highlights and cherish the memories.';
+      'Make every event memorable by sharing it with others. Capture special moments and keep the beautiful memories.';
 
   @override
   String get next => 'Next';
@@ -79,52 +79,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get password => 'Password';
 
   @override
-  String get forgetPassword => 'Forget Password';
-
-  @override
-  String get login => 'Login';
-
-  @override
-  String get dontHaveAccount => 'Don\'t have an account?';
-
-  @override
-  String get createAccount => 'Create Account';
-
-  @override
-  String get loginWithGoogle => 'Login with Google';
-
-  @override
-  String get register => 'Register';
+  String get rePassword => 'Confirm Password';
 
   @override
   String get name => 'Name';
 
   @override
-  String get rePassword => 'Re Password';
+  String get login => 'Login';
 
   @override
-  String get alreadyHaveAccount => 'Already Have Account?';
+  String get createAccount => 'Create Account';
+
+  @override
+  String get alreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get dontHaveAccount => 'Don\'t have an account?';
+
+  @override
+  String get forgetPassword => 'Forgot Password?';
 
   @override
   String get resetPassword => 'Reset Password';
 
   @override
-  String get welcomeBack => 'Welcome back';
+  String get resetEmailSent =>
+      'Password reset link has been sent to your email.';
 
   @override
-  String get all => 'All';
+  String get enterValidEmail => 'Please enter a valid email address.';
 
   @override
-  String get sport => 'Sport';
+  String get loginSuccess => 'Login successful.';
 
   @override
-  String get birthday => 'Birthday';
+  String get registrationSuccess => 'Account created successfully.';
 
   @override
-  String get meeting => 'Meeting';
+  String get passwordsNotMatch => 'Passwords do not match.';
 
   @override
-  String get exhibition => 'Exhibition';
+  String get loginWithGoogle => 'Login with Google';
+
+  @override
+  String get welcomeBack => 'Welcome Back';
 
   @override
   String get home => 'Home';
@@ -142,7 +140,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addEvent => 'Add New Event';
 
   @override
-  String get desc_birthday => 'This is a birthday party';
+  String get all => 'All';
+
+  @override
+  String get sport => 'Sport';
+
+  @override
+  String get birthday => 'Birthday';
+
+  @override
+  String get meeting => 'Meeting';
+
+  @override
+  String get exhibition => 'Exhibition';
+
+  @override
+  String get desc_birthday => 'Birthday party';
 
   @override
   String get desc_meeting => 'Team meeting in Cairo';
@@ -157,5 +170,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createEvent => 'Create Event';
 
   @override
-  String get noData => 'No Data';
+  String get noData => 'No data available';
+
+  @override
+  String get register => 'Register';
 }

@@ -48,7 +48,7 @@ class EventCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          /// 🔹 Image
+          ///  Image
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             child: Image.asset(
@@ -59,7 +59,7 @@ class EventCard extends StatelessWidget {
             ),
           ),
 
-          /// 🔹 Date + Title + Heart + Delete
+          ///  Date + Title + Heart + Delete
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(

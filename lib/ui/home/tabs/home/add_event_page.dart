@@ -1,10 +1,10 @@
 import 'package:event_planning/utils/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:event_planning/models/event_model.dart';
 import 'package:event_planning/utils/app_styles.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:event_planning/l10n/app_localizations.dart';
+import 'package:event_planning/services/firestore_service.dart';
 
 class AddEventPage extends StatefulWidget {
   const AddEventPage({super.key});
@@ -16,45 +16,47 @@ class AddEventPage extends StatefulWidget {
 class _AddEventPageState extends State<AddEventPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final titleController = TextEditingController();
-  final descriptionController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   String selectedType = 'Sport';
 
-  final List<String> eventTypes = [
+  bool _saving = false;
+
+  final List<String> eventTypes = const [
     'Sport',
     'Birthday',
     'Meeting',
     'Exhibition',
   ];
 
-  final Map<String, String> typeToImage = {
+  final Map<String, String> typeToImage = const {
     'Sport': 'assets/images/sport.png',
     'Birthday': 'assets/images/birthday.png',
     'Meeting': 'assets/images/meeting.png',
     'Exhibition': 'assets/images/exhibition.png',
   };
 
-  final Map<String, IconData> typeToIcon = {
+  final Map<String, IconData> typeToIcon = const {
     'Sport': Icons.sports_soccer,
     'Birthday': Icons.cake,
     'Meeting': Icons.business_center,
     'Exhibition': Icons.event,
   };
 
-  void _pickDate() async {
+  Future<void> _pickDate() async {
     final date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2023),
-      lastDate: DateTime(2030),
+      lastDate: DateTime(2035),
     );
     if (date != null) setState(() => selectedDate = date);
   }
 
-  void _pickTime() async {
+  Future<void> _pickTime() async {
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -62,47 +64,65 @@ class _AddEventPageState extends State<AddEventPage> {
     if (time != null) setState(() => selectedTime = time);
   }
 
-  void _submitForm() async {
-    if (_formKey.currentState!.validate() &&
-        selectedDate != null &&
-        selectedTime != null) {
-      final finalDate = DateTime(
-        selectedDate!.year,
-        selectedDate!.month,
-        selectedDate!.day,
-        selectedTime!.hour,
-        selectedTime!.minute,
-      );
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (selectedDate == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Please select a date')));
+      return;
+    }
+    if (selectedTime == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Please select a time')));
+      return;
+    }
+
+    final finalDate = DateTime(
+      selectedDate!.year,
+      selectedDate!.month,
+      selectedDate!.day,
+      selectedTime!.hour,
+      selectedTime!.minute,
+    );
+
+    setState(() => _saving = true);
+    try {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      if (uid == null) throw Exception('User not logged in');
 
       final event = EventModel(
+        id: 'temp', // سيُستبدل بـ doc.id عند القراءة
         title: titleController.text.trim(),
         description: descriptionController.text.trim(),
-        imagePath: typeToImage[selectedType]!,
         date: finalDate,
         type: selectedType,
+        imagePath: typeToImage[selectedType] ?? 'assets/images/birthday.png',
+        isSaved: false,
+        ownerId: uid,
       );
 
-      try {
-        final docRef = await FirebaseFirestore.instance
-            .collection(EventModel.collectionName)
-            .add(event.toFirestore());
+      await FirestoreService.addEvent(event);
 
-        await docRef.update({'id': docRef.id});
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Event added successfully')),
-          );
-          Navigator.pop(context);
-        }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: $e')),
-          );
-        }
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Event added successfully')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,6 +152,8 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
               const SizedBox(height: 16),
+
+              // اختيار النوع
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -140,6 +162,11 @@ class _AddEventPageState extends State<AddEventPage> {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: ChoiceChip(
+                        avatar: Icon(
+                          typeToIcon[type],
+                          size: 18,
+                          color: isSelected ? Colors.white : color.onBackground,
+                        ),
                         label: Text(type),
                         selected: isSelected,
                         onSelected: (_) => setState(() => selectedType = type),
@@ -153,6 +180,8 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // العنوان
               Text("Title", style: AppStyles.bold14Primary),
               TextFormField(
                 controller: titleController,
@@ -163,11 +192,14 @@ class _AddEventPageState extends State<AddEventPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                validator: (value) => value == null || value.isEmpty
+                validator: (value) =>
+                (value == null || value.trim().isEmpty)
                     ? 'Please enter a title'
                     : null,
               ),
               const SizedBox(height: 12),
+
+              // الوصف
               Text("Description", style: AppStyles.bold14Primary),
               TextFormField(
                 controller: descriptionController,
@@ -175,26 +207,24 @@ class _AddEventPageState extends State<AddEventPage> {
                 decoration: InputDecoration(
                   labelText: "Event Description",
                   alignLabelWithHint: true,
-                  prefixIcon: Icon(
-                    Icons.description,
-                    color: AppColors.primaryLight,
-                  ),
+                  prefixIcon:
+                  Icon(Icons.description, color: AppColors.primaryLight),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                validator: (value) => value == null || value.isEmpty
+                validator: (value) =>
+                (value == null || value.trim().isEmpty)
                     ? 'Please enter a description'
                     : null,
               ),
               const SizedBox(height: 20),
+
+              // التاريخ
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.calendar_today,
-                  color: AppColors.primaryLight,
-                ),
-                title: Text("Event Date"),
+                leading: Icon(Icons.calendar_today, color: AppColors.primaryLight),
+                title: const Text("Event Date"),
                 trailing: Text(
                   selectedDate == null
                       ? 'Select Date'
@@ -203,10 +233,12 @@ class _AddEventPageState extends State<AddEventPage> {
                 ),
                 onTap: _pickDate,
               ),
+
+              // الوقت
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(Icons.access_time, color: AppColors.primaryLight),
-                title: Text("Event Time"),
+                title: const Text("Event Time"),
                 trailing: Text(
                   selectedTime == null
                       ? 'Select Time'
@@ -216,6 +248,8 @@ class _AddEventPageState extends State<AddEventPage> {
                 onTap: _pickTime,
               ),
               const SizedBox(height: 30),
+
+              // (Placeholder) اختيار الموقع
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -223,7 +257,7 @@ class _AddEventPageState extends State<AddEventPage> {
                   const SizedBox(height: 8),
                   InkWell(
                     onTap: () {
-                      // Placeholder
+                      // TODO: اختر الموقع لاحقًا
                     },
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
@@ -246,7 +280,7 @@ class _AddEventPageState extends State<AddEventPage> {
                             ),
                             child: const Icon(
                               Icons.my_location,
-                              color: Color.fromARGB(255, 223, 221, 230),
+                              color: Color(0xFFDfDDE6),
                               size: 20,
                             ),
                           ),
@@ -257,10 +291,7 @@ class _AddEventPageState extends State<AddEventPage> {
                               style: AppStyles.bold16Primary,
                             ),
                           ),
-                          Icon(
-                            Icons.chevron_right,
-                            color: Color.fromARGB(255, 8, 60, 232),
-                          ),
+                          const Icon(Icons.chevron_right, color: Color(0xFF083CE8)),
                         ],
                       ),
                     ),
@@ -268,18 +299,29 @@ class _AddEventPageState extends State<AddEventPage> {
                 ],
               ),
               const SizedBox(height: 30),
+
+              // زر إضافة الحدث
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submitForm,
+                  onPressed: _saving ? null : _submitForm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryLight,
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text("Add Event", style: AppStyles.bold16White),
+                  child: _saving
+                      ? const SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                      : Text("Add Event", style: AppStyles.bold16White),
                 ),
               ),
             ],

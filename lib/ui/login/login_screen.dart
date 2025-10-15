@@ -5,12 +5,51 @@ import 'package:event_planning/providers/app_theme_provider.dart';
 import 'package:event_planning/utils/app_colors.dart';
 import 'package:event_planning/utils/app_styles.dart';
 import 'package:event_planning/utils/app_assets.dart';
+import 'package:event_planning/services/auth_service.dart';
 
 import '../../providers/app_language_provider.dart';
 import '../../utils/app_routes.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+  bool _loading = false;
+
+  void _login() async {
+    final t = AppLocalizations.of(context)!;
+
+    setState(() => _loading = true);
+    try {
+      await _authService.loginWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+
+      _showSnackBar(t.loginSuccess);
+
+      // Navigate to home screen
+      Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
+    } catch (e) {
+      _showSnackBar(e.toString());
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +75,27 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 48),
+
+              /// Email Field
               _buildInputField(
                 context,
+                controller: _emailController,
                 icon: Icons.email_outlined,
                 hint: t.email,
               ),
+
               const SizedBox(height: 16),
+
+              /// Password Field
               _buildInputField(
                 context,
+                controller: _passwordController,
                 icon: Icons.lock_outline,
                 hint: t.password,
                 obscure: true,
-                suffix: Icon(Icons.visibility_off),
+                suffix: const Icon(Icons.visibility_off),
               ),
+
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
@@ -67,10 +114,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               ElevatedButton(
-                onPressed: () {
-                  // TODO: تحقق من صحة البيانات هنا إذا كنت ناوي تعمل Auth
-                  Navigator.pushReplacementNamed(context, AppRoutes.homeRouteName);
-                },
+                onPressed: _loading ? null : _login,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryLight,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -78,7 +122,9 @@ class LoginScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(t.login, style: AppStyles.bold16White),
+                child: _loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(t.login, style: AppStyles.bold16White),
               ),
 
               const SizedBox(height: 16),
@@ -97,9 +143,9 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   )
-
                 ],
               ),
+
               const SizedBox(height: 8),
               Row(
                 children: const [
@@ -111,9 +157,12 @@ class LoginScreen extends StatelessWidget {
                   Expanded(child: Divider(thickness: 1)),
                 ],
               ),
+
               const SizedBox(height: 16),
               OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  // TODO: ربط Google Sign-In هنا لاحقًا
+                },
                 icon: Image.asset(AppAssets.googleIcon, height: 24),
                 label: Text(t.loginWithGoogle, style: AppStyles.medium16Primary),
                 style: OutlinedButton.styleFrom(
@@ -124,6 +173,7 @@ class LoginScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
+
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -140,12 +190,16 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInputField(BuildContext context,
-      {required IconData icon,
-        required String hint,
-        bool obscure = false,
-        Widget? suffix}) {
+  Widget _buildInputField(
+    BuildContext context, {
+    required TextEditingController controller,
+    required IconData icon,
+    required String hint,
+    bool obscure = false,
+    Widget? suffix,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,

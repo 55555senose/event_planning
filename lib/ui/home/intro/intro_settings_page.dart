@@ -59,7 +59,7 @@ class IntroSettingsPage extends StatelessWidget {
 
             const SizedBox(height: 32),
 
-            /// 🔹 Language & Theme Selector Combined Container
+            /// Language & Theme Selector Combined Container
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               decoration: BoxDecoration(
@@ -68,7 +68,7 @@ class IntroSettingsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  /// 🔸 Language Row
+                  ///  Language Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -98,7 +98,7 @@ class IntroSettingsPage extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  /// 🔸 Theme Row
+                  /// Theme Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -131,7 +131,7 @@ class IntroSettingsPage extends StatelessWidget {
 
             const SizedBox(height: 36),
 
-            /// 🔹 Let's Start Button
+            /// Let's Start Button
             ElevatedButton(
               onPressed: onNext,
               style: ElevatedButton.styleFrom(

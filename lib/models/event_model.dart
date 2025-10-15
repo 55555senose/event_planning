@@ -1,48 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventModel {
-  static const String collectionName = 'Events';
-  late final String id;
+  static const String collectionName = 'events';
+
+  final String id;
   final String title;
   final String description;
-  final String imagePath;
   final DateTime date;
   final String type;
-  bool isSaved;
+  final String imagePath;
+  final bool isSaved;
+  final String ownerId;
 
   EventModel({
-    this.id = '',
+    required this.id,
     required this.title,
     required this.description,
-    required this.imagePath,
     required this.date,
     required this.type,
-    this.isSaved = false,
+    required this.imagePath,
+    required this.isSaved,
+    required this.ownerId,
   });
 
-  /// ✅ من JSON فيه date كـ milliseconds
-  factory EventModel.fromFirestore(Map<String, dynamic> data) {
+  factory EventModel.fromFirestore(Map<String, dynamic> data, String id) {
     return EventModel(
-      id: data['id'] ?? '',
+      id: id,
       title: data['title'] ?? '',
       description: data['description'] ?? '',
-      imagePath: data['imagePath'] ?? '',
-      date: DateTime.fromMillisecondsSinceEpoch(data['date']), // ✅
+      date: (data['date'] as Timestamp).toDate(),
       type: data['type'] ?? '',
+      imagePath: data['imagePath'] ?? '',
       isSaved: data['isSaved'] ?? false,
+      ownerId: data['ownerId'] ?? '',
     );
   }
 
-  /// ✅ إلى JSON فيه date كـ milliseconds
   Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
       'title': title,
       'description': description,
-      'imagePath': imagePath,
-      'date': date.millisecondsSinceEpoch, // ✅
+      'date': Timestamp.fromDate(date),
       'type': type,
+      'imagePath': imagePath,
       'isSaved': isSaved,
+      'ownerId': ownerId,
     };
   }
 }

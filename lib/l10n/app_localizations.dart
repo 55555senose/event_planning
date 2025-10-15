@@ -149,7 +149,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeMessage.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to our amazing event planning app!'**
+  /// **'Welcome to the amazing event planning app!'**
   String get welcomeMessage;
 
   /// No description provided for @getStarted.
@@ -167,37 +167,37 @@ abstract class AppLocalizations {
   /// No description provided for @personalizeDescription.
   ///
   /// In en, this message translates to:
-  /// **'Choose your preferred theme and language to get started with a comfortable, tailored experience that suits your style.'**
+  /// **'Choose your preferred theme and language to start using the app in a comfortable and personalized way that suits your style.'**
   String get personalizeDescription;
 
   /// No description provided for @letsStart.
   ///
   /// In en, this message translates to:
-  /// **'Let’s Start'**
+  /// **'Let\'s Start'**
   String get letsStart;
 
   /// No description provided for @intro1Title.
   ///
   /// In en, this message translates to:
-  /// **'Find Events That Inspire You'**
+  /// **'Discover Events that Inspire You'**
   String get intro1Title;
 
   /// No description provided for @intro1Description.
   ///
   /// In en, this message translates to:
-  /// **'Dive into a world of events crafted to fit your unique interests. Our curated recommendations will help you explore, connect, and make the most of every opportunity around you.'**
+  /// **'Explore a world of events tailored to your interests. Our carefully curated recommendations help you explore, connect, and make the most of every opportunity around you.'**
   String get intro1Description;
 
   /// No description provided for @intro2Title.
   ///
   /// In en, this message translates to:
-  /// **'Effortless Event Planning'**
+  /// **'Organize Events with Ease'**
   String get intro2Title;
 
   /// No description provided for @intro2Description.
   ///
   /// In en, this message translates to:
-  /// **'Take the hassle out of organizing events with our all-in-one planning tools. Plan with ease and focus on what matters.'**
+  /// **'Say goodbye to the hassle of event planning with our comprehensive tools. Plan with ease and focus on what matters most.'**
   String get intro2Description;
 
   /// No description provided for @intro3Title.
@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @intro3Description.
   ///
   /// In en, this message translates to:
-  /// **'Make every event memorable by sharing the experience with others. Capture and relive the highlights and cherish the memories.'**
+  /// **'Make every event memorable by sharing it with others. Capture special moments and keep the beautiful memories.'**
   String get intro3Description;
 
   /// No description provided for @next.
@@ -230,41 +230,11 @@ abstract class AppLocalizations {
   /// **'Password'**
   String get password;
 
-  /// No description provided for @forgetPassword.
+  /// No description provided for @rePassword.
   ///
   /// In en, this message translates to:
-  /// **'Forget Password'**
-  String get forgetPassword;
-
-  /// No description provided for @login.
-  ///
-  /// In en, this message translates to:
-  /// **'Login'**
-  String get login;
-
-  /// No description provided for @dontHaveAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t have an account?'**
-  String get dontHaveAccount;
-
-  /// No description provided for @createAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Account'**
-  String get createAccount;
-
-  /// No description provided for @loginWithGoogle.
-  ///
-  /// In en, this message translates to:
-  /// **'Login with Google'**
-  String get loginWithGoogle;
-
-  /// No description provided for @register.
-  ///
-  /// In en, this message translates to:
-  /// **'Register'**
-  String get register;
+  /// **'Confirm Password'**
+  String get rePassword;
 
   /// No description provided for @name.
   ///
@@ -272,17 +242,35 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get name;
 
-  /// No description provided for @rePassword.
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'Re Password'**
-  String get rePassword;
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
 
   /// No description provided for @alreadyHaveAccount.
   ///
   /// In en, this message translates to:
-  /// **'Already Have Account?'**
+  /// **'Already have an account?'**
   String get alreadyHaveAccount;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @forgetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgetPassword;
 
   /// No description provided for @resetPassword.
   ///
@@ -290,41 +278,47 @@ abstract class AppLocalizations {
   /// **'Reset Password'**
   String get resetPassword;
 
+  /// No description provided for @resetEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset link has been sent to your email.'**
+  String get resetEmailSent;
+
+  /// No description provided for @enterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address.'**
+  String get enterValidEmail;
+
+  /// No description provided for @loginSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful.'**
+  String get loginSuccess;
+
+  /// No description provided for @registrationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully.'**
+  String get registrationSuccess;
+
+  /// No description provided for @passwordsNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get passwordsNotMatch;
+
+  /// No description provided for @loginWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Google'**
+  String get loginWithGoogle;
+
   /// No description provided for @welcomeBack.
   ///
   /// In en, this message translates to:
-  /// **'Welcome back'**
+  /// **'Welcome Back'**
   String get welcomeBack;
-
-  /// No description provided for @all.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get all;
-
-  /// No description provided for @sport.
-  ///
-  /// In en, this message translates to:
-  /// **'Sport'**
-  String get sport;
-
-  /// No description provided for @birthday.
-  ///
-  /// In en, this message translates to:
-  /// **'Birthday'**
-  String get birthday;
-
-  /// No description provided for @meeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Meeting'**
-  String get meeting;
-
-  /// No description provided for @exhibition.
-  ///
-  /// In en, this message translates to:
-  /// **'Exhibition'**
-  String get exhibition;
 
   /// No description provided for @home.
   ///
@@ -356,10 +350,40 @@ abstract class AppLocalizations {
   /// **'Add New Event'**
   String get addEvent;
 
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @sport.
+  ///
+  /// In en, this message translates to:
+  /// **'Sport'**
+  String get sport;
+
+  /// No description provided for @birthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday'**
+  String get birthday;
+
+  /// No description provided for @meeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Meeting'**
+  String get meeting;
+
+  /// No description provided for @exhibition.
+  ///
+  /// In en, this message translates to:
+  /// **'Exhibition'**
+  String get exhibition;
+
   /// No description provided for @desc_birthday.
   ///
   /// In en, this message translates to:
-  /// **'This is a birthday party'**
+  /// **'Birthday party'**
   String get desc_birthday;
 
   /// No description provided for @desc_meeting.
@@ -389,8 +413,14 @@ abstract class AppLocalizations {
   /// No description provided for @noData.
   ///
   /// In en, this message translates to:
-  /// **'No Data'**
+  /// **'No data available'**
   String get noData;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
 }
 
 class _AppLocalizationsDelegate

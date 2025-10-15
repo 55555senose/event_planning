@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _toggleFavorite(EventModel event) {
     setState(() {
-      event.isSaved = !event.isSaved;
     });
   }
 
@@ -36,7 +35,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/birthday.png',
       date: DateTime(2023, 11, 21),
       type: 'Birthday',
-      isSaved: _savedEvents.any((e) => e.title == t.birthday),
+      isSaved: _savedEvents.any((e) => e.title == t.birthday), id: '', ownerId: '',
     ),
     EventModel(
       title: t.meeting,
@@ -44,7 +43,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/meeting.png',
       date: DateTime(2023, 11, 22),
       type: 'Meeting',
-      isSaved: _savedEvents.any((e) => e.title == t.meeting), 
+      isSaved: _savedEvents.any((e) => e.title == t.meeting), id: '', ownerId: '',
     ),
     EventModel(
       title: t.exhibition,
@@ -52,7 +51,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/exhibition.png',
       date: DateTime(2023, 11, 23),
       type: 'Exhibition',
-      isSaved: _savedEvents.any((e) => e.title == t.exhibition), 
+      isSaved: _savedEvents.any((e) => e.title == t.exhibition), id: '', ownerId: '',
     ),
     EventModel(
       title: t.sport,
@@ -60,7 +59,7 @@ Widget build(BuildContext context) {
       imagePath: 'assets/images/sport.png',
       date: DateTime(2025, 8, 24),
       type: 'Sport',
-      isSaved: _savedEvents.any((e) => e.title == t.sport),
+      isSaved: _savedEvents.any((e) => e.title == t.sport), id: '', ownerId: '',
     ),
   ];
 
@@ -87,7 +86,7 @@ HomeTab(onToggleFavorite: _toggleFavorite),
                 date: event.date,
                 isSaved: true,
                 onToggleFavorite: () => _toggleFavorite(event),
-                  eventId: event.id, // ✅ مهم جدًا
+                  eventId: event.id,
 
               ),
             )

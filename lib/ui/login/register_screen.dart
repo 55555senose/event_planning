@@ -1,13 +1,58 @@
 import 'package:event_planning/l10n/app_localizations.dart';
 import 'package:event_planning/providers/app_language_provider.dart';
+import 'package:event_planning/services/auth_service.dart';
 import 'package:event_planning/utils/app_assets.dart';
 import 'package:event_planning/utils/app_colors.dart';
 import 'package:event_planning/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _rePasswordController = TextEditingController();
+
+  final AuthService _authService = AuthService();
+
+  bool _loading = false;
+
+  void _register() async {
+    final t = AppLocalizations.of(context)!;
+
+    if (_passwordController.text != _rePasswordController.text) {
+      _showSnackBar(t.passwordsNotMatch);
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    try {
+      await _authService.registerWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
+      _showSnackBar(t.registrationSuccess);
+      Navigator.pop(context); // ترجع لصفحة تسجيل الدخول
+    } catch (e) {
+      _showSnackBar(e.toString());
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +80,10 @@ class RegisterScreen extends StatelessWidget {
               Text("Evently", style: AppStyles.bold24Primary),
               const SizedBox(height: 32),
 
-              /// 🔹 Name Field
+              ///  Name Field
               _buildInputField(
                 context,
+                controller: _nameController,
                 hint: t.name,
                 icon: Icons.person_outline,
               ),
@@ -47,15 +93,17 @@ class RegisterScreen extends StatelessWidget {
               /// 🔹 Email Field
               _buildInputField(
                 context,
+                controller: _emailController,
                 hint: t.email,
                 icon: Icons.email_outlined,
               ),
 
               const SizedBox(height: 16),
 
-              /// 🔹 Password Field
+              ///  Password Field
               _buildInputField(
                 context,
+                controller: _passwordController,
                 hint: t.password,
                 icon: Icons.lock_outline,
                 obscure: true,
@@ -67,6 +115,7 @@ class RegisterScreen extends StatelessWidget {
               /// 🔹 Re-Password Field
               _buildInputField(
                 context,
+                controller: _rePasswordController,
                 hint: t.rePassword,
                 icon: Icons.lock_outline,
                 obscure: true,
@@ -75,9 +124,9 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              /// 🔹 Create Account Button
+              ///  Create Account Button
               ElevatedButton(
-                onPressed: () {},
+                onPressed: _loading ? null : _register,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryLight,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -86,7 +135,9 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
                 child: Center(
-                  child: Text(t.createAccount, style: AppStyles.bold16White),
+                  child: _loading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(t.createAccount, style: AppStyles.bold16White),
                 ),
               ),
 
@@ -111,7 +162,7 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              /// 🔹 Language Flags
+              ///  Language Flags
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -128,13 +179,15 @@ class RegisterScreen extends StatelessWidget {
   }
 
   Widget _buildInputField(
-      BuildContext context, {
-        required String hint,
-        required IconData icon,
-        bool obscure = false,
-        Widget? suffix,
-      }) {
+    BuildContext context, {
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    bool obscure = false,
+    Widget? suffix,
+  }) {
     return TextField(
+      controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,

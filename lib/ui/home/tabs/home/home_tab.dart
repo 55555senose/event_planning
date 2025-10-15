@@ -40,7 +40,7 @@ class _HomeTabState extends State<HomeTab> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
-          /// 🔹 Header
+          ///  Header
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
@@ -57,12 +57,12 @@ class _HomeTabState extends State<HomeTab> {
 
           const SizedBox(height: 16),
 
-          /// 🔹 Categories
+          /// Categories
           _buildCategoryFilter(t),
 
           const SizedBox(height: 16),
 
-          /// 🔹 Event List
+          ///  Event List
           Expanded(
             child: StreamBuilder<List<EventModel>>(
               stream: FirestoreService.getEventsStream(),
@@ -101,7 +101,7 @@ class _HomeTabState extends State<HomeTab> {
                       date: event.date,
                       isSaved: event.isSaved,
                       onToggleFavorite: () => widget.onToggleFavorite(event),
-                        eventId: event.id, // ✅ مهم جدًا
+                        eventId: event.id,
 
                     );
                   },

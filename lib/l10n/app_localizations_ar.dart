@@ -27,7 +27,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get light => 'نهاري';
 
   @override
-  String get logout => 'تسجيل الخروخ';
+  String get logout => 'تسجيل الخروج';
 
   @override
   String get introTitle => 'مقدمة';
@@ -79,52 +79,50 @@ class AppLocalizationsAr extends AppLocalizations {
   String get password => 'كلمة المرور';
 
   @override
-  String get forgetPassword => 'نسيت كلمة المرور';
-
-  @override
-  String get login => 'تسجيل الدخول';
-
-  @override
-  String get dontHaveAccount => 'ليس لديك حساب؟';
-
-  @override
-  String get createAccount => 'إنشاء حساب';
-
-  @override
-  String get loginWithGoogle => 'الدخول باستخدام Google';
-
-  @override
-  String get register => 'إنشاء حساب';
+  String get rePassword => 'تأكيد كلمة المرور';
 
   @override
   String get name => 'الاسم';
 
   @override
-  String get rePassword => 'تأكيد كلمة المرور';
+  String get login => 'تسجيل الدخول';
 
   @override
-  String get alreadyHaveAccount => 'لديك حساب بالفعل؟';
+  String get createAccount => 'إنشاء حساب';
+
+  @override
+  String get alreadyHaveAccount => 'هل لديك حساب؟';
+
+  @override
+  String get dontHaveAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get forgetPassword => 'نسيت كلمة المرور؟';
 
   @override
   String get resetPassword => 'إعادة تعيين كلمة المرور';
 
   @override
+  String get resetEmailSent =>
+      'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.';
+
+  @override
+  String get enterValidEmail => 'يرجى إدخال بريد إلكتروني صالح.';
+
+  @override
+  String get loginSuccess => 'تم تسجيل الدخول بنجاح.';
+
+  @override
+  String get registrationSuccess => 'تم إنشاء الحساب بنجاح.';
+
+  @override
+  String get passwordsNotMatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get loginWithGoogle => 'تسجيل الدخول باستخدام جوجل';
+
+  @override
   String get welcomeBack => 'مرحبًا بعودتك';
-
-  @override
-  String get all => 'الكل';
-
-  @override
-  String get sport => 'رياضة';
-
-  @override
-  String get birthday => 'عيد ميلاد';
-
-  @override
-  String get meeting => 'اجتماع';
-
-  @override
-  String get exhibition => 'معرض';
 
   @override
   String get home => 'الرئيسية';
@@ -142,6 +140,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get addEvent => 'إضافة حدث جديد';
 
   @override
+  String get all => 'الكل';
+
+  @override
+  String get sport => 'رياضة';
+
+  @override
+  String get birthday => 'عيد ميلاد';
+
+  @override
+  String get meeting => 'اجتماع';
+
+  @override
+  String get exhibition => 'معرض';
+
+  @override
   String get desc_birthday => 'حفلة عيد ميلاد';
 
   @override
@@ -157,5 +170,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get createEvent => 'إنشاء حدث';
 
   @override
-  String get noData => 'لا توجد بينات';
+  String get noData => 'لا توجد بيانات';
+
+  @override
+  String get register => 'إنشاء حساب';
 }
